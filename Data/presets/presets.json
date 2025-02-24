@@ -1,0 +1,44 @@
+{
+  "Alimentos": [
+      {
+        "nomePrograma": "Pipoca",
+        "nomeAlimento": "Pipoca",
+        "tempo": "03:00",
+        "potencia": 7,
+        "aquecimento": "P",
+        "instrucoes": "Observar o barulho de estouros do milho, caso houver um intervalo de mais de 10 segundos entre um estouro e outro, interrompa o aquecimento"
+      },
+      {
+        "nomePrograma": "Leite",
+        "nomeAlimento": "Leite",
+        "tempo": "05:00",
+        "potencia": 5,
+        "aquecimento": "L",
+        "instrucoes": "Cuidado com aquecimento de l�quidos, o choque t�rmico aliado ao movimento do recipiente pode causar fervura imediata causando risco de queimaduras"
+      },
+      {
+        "nomePrograma": "Carnes de boi",
+        "nomeAlimento": "Carne em peda�o ou fatias",
+        "tempo": "14:00",
+        "potencia": 4,
+        "aquecimento": "B",
+        "instrucoes": " Interrompa o processo na metade e vire o conte�do com a parte de baixo para cima para o descongelamento uniforme."
+      },
+      {
+        "nomePrograma": "Frango",
+        "nomeAlimento": "Frango (qualquer corte)",
+        "tempo": "08:00",
+        "potencia": 7,
+        "aquecimento": "F",
+        "instrucoes": " Interrompa o processo na metade e vire o conte�do com a parte de baixo para cima para o descongelamento uniforme."
+      },
+      {
+        "nomePrograma": "Feij�o",
+        "nomeAlimento": "Feij�o congelado",
+        "tempo": "08:00",
+        "potencia": 9,
+        "aquecimento": "F",
+        "instrucoes": "Deixe o recipiente destampado e em casos de pl�stico, cuidado ao retirar o recipiente pois o mesmo pode perder resist�ncia em altas temperaturas"
+      }
+    ]
+}

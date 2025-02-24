@@ -1,0 +1,412 @@
+﻿@{
+    ViewData["Title"] = "Microondas Digital";
+}
+<style>
+    /* Hide the clock button in the time input */
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        display: none;
+    }
+
+    .selected-input {
+        border: 2px solid #007bff !important; /* Highlight with a blue border */
+    }
+
+    .h-100{
+        height: 100% !important;
+    }
+
+    .form-control {
+        border: none;
+        box-shadow: none;
+        display: block;
+        width: 100%;
+        padding: 0%;
+        font-size: 4rem;
+        font-weight: 500;
+        line-height: 5rem;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: .25rem;
+        transition: border-color, box-shadow;
+        text-align: right;
+        font-family: 'Orbitron', sans-serif;
+    }
+</style>
+
+<body>
+    <div class="container-fluid">
+        <span class="text-danger">@Html.ValidationMessage("Potencia")</span>
+        <span class="text-danger">@Html.ValidationMessage("Tempo")</span>
+        <span class="text-danger">@Html.ValidationMessage("Estado")</span>
+        <div class="row row-cols-2">
+            <div class="col-md-6">
+                <div id="panelColor" class="row justify-content-center text-black bg-secondary h-100">
+                    <div class="col-md-12 border border-dark">
+                        <label id="timerPanel" name="painel">@ViewBag.Painel</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-white bg-dark border border-white">
+                <form id="microondasForm" method="post" action="/Microondas/Executar">
+                    <div id="potencyRow" name="potencyRow" class="row">
+                        <label>Potencia</label>
+                        <input id="potencyInput" name="potencia" type="number" class="form-control text-white bg-dark" max="10" min="0" value="0"/>
+                    </div>
+                    <div id="timeRow" name="timeRow" class="row">
+                        <label>Tempo</label>
+                        <input id="timerInput" name="tempo" type="time" class="form-control text-white bg-dark" data-inputmask-alias="time" data-inputmask-inputformat="MM:SS" max="02:00" min="00:00" />
+                    </div>
+                    <div id="statusDiv" hidden>
+                        <input id="statusInput" name="estado" type="text" value="@ViewBag.Estado" />
+                    </div>
+
+                    <div id="exceptionDiv" hidden>
+                        <input id="exceptionInput" name="excecao" type="number" value="@ViewBag.Execao" />
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+
+                    <div class="container bg-dark border border-white">
+                        <div class="container">
+                            <div id="programas" class="row justify-content-center">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="9">9</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="8">8</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="7">7</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="6">6</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="5">5</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="4">4</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="3">3</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="2">2</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="1">1</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-dark btn-lg w-100" data-value="potencia">Potencia</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-number btn-dark btn-lg w-100" data-value="0">0</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" class="btn btn-dark btn-lg w-100" data-value="tempo">Tempo</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <button type="submit" class="btn btn-dark btn-lg w-100" data-value="pausa" formaction="/Microondas/Pausar">Pausa/Cancela</button>
+                                </div>
+                                <div class="col-sm">
+                                    <button id="start" type="submit" class="btn btn-dark btn-lg w-100" data-value="inicio">Inicio (+30 segundos)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<footer>
+
+    <script>
+        $(document).ready(function (){
+            console.log($("#timeInput").val());
+            console.log($("#potencyInput").val());
+            console.log($("#statusInput").val());
+            console.log($("#exceptionInput").val());
+        })
+    </script>
+
+    <script type="text/javascript"  name="Programas">
+        $(document).ready(function (){
+            const programasJson = '@Html.Raw(ViewBag.Programas)';
+
+            
+            const programas = JSON.parse(programasJson);
+
+            const container = $('#programas');
+
+            programas.forEach(programa => {
+                const button = $(`
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-dark btn-lg programa-btn"
+                                    data-potencia="${programa.potencia}" data-tempo="${programa.tempo}" data-excecao="1" data-value="20">
+                                ${programa.nomePrograma}
+                            </button>
+                        </div>
+                    `);
+
+                    container.append(button);
+            });
+
+            $(document).on('click', '.programa-btn', function () {
+
+                const potencia = $(this).data('potencia');
+                const tempo = $(this).data('tempo');
+                const excecao = $(this).data('excecao');
+
+                $('#timerInput').attr('max', '25:00');
+                $('#potencyInput').val(potencia);
+                $('#timerInput').val(tempo);
+                $('#exceptionInput').val(excecao);
+
+                $('#timeRow').show();
+                $('#potencyRow').hide();
+                selectedInput = $('#timerInput');
+            });
+        });
+    </script>
+
+    <script name="ValidaInputs">
+        $(document).ready(function () {
+               const maxTime = "02:00";
+               const minTime = "00:00";
+               const maxPotency = "10";
+               const minPotency = "0";
+
+               const excecao = $("#exceptionInput").val();
+
+               if(parseInt(excecao) == 1){
+                   $('#timerInput').attr('max', '25:00');
+               } 
+
+               $('form').on('submit', function () {
+                    const tempoValue = $('#timerInput').val();
+                    const potenciaValue = $('#potencyInput').val();
+                    const estadoValue = $('#statusInput').val();
+
+                    if (!tempoValue || !/^\d{2}:\d{2}$/.test(tempoValue)) {
+                        alert('Por favor, insira um tempo válido no formato MM:SS.');
+                        return; 
+                    }
+
+                    if (!tempoValue) {
+                        alert('Por favor, insira um tempo válido.');
+                        return false;
+                    }
+
+                    if(!potenciaValue){
+                        $('#potencyInput').val('0');
+                    }
+
+                    if(!estadoValue){
+                        $('#statusInput').val("Espera");
+                    }
+               });
+
+               function validadeTimeInput(){
+                   const selectedTime = $('#timerInput').val();
+
+                   const [selectedMinutes, selectedSeconds] = selectedTime.split(':').map(Number);
+                   const [maxMinutes, maxSeconds] = maxTime.split(':').map(Number);
+
+                   const totalSelectedTime = selectedMinutes * 60 + selectedSeconds;
+                   const totalMaxTime = maxMinutes * 60 + maxSeconds;
+
+                   if(parseInt(totalSelectedTime) > parseInt(totalMaxTime) || parseInt(totalSelectedTime) < parseInt(minTime)){
+                       alert("Por favor insira um tempo entre 02:00 minutos e 00:00 segundos");
+                       $('#timerInput').val('00:00');
+                   }
+
+                   if (selectedTime.length === 2 && !selectedTime.includes(':')) {
+                        $$('#timerInput').val(selectedTime + ':');
+                   }
+               }
+
+               function validadePotencyInput(){
+                   const selectedPotency = $('#potencyInput').val();
+
+                   if(parseInt(selectedPotency) > parseInt(maxPotency) || parseInt(selectedPotency) < parseInt(minPotency)){
+                       alert("Por favor insira uma potencia entre 1 e 10");
+                       $('#potencyInput').val('0');
+                   }
+               }
+
+               $('#timerInput').on('change', validadeTimeInput);
+               $('#timerInput').on('input', validadeTimeInput);
+
+               $('#potencyInput').on('change', validadePotencyInput);
+               $('#potencyInput').on('input', validadePotencyInput);
+           });
+    </script>
+
+    <script name="TecladoVitual">
+        $(document).ready(function () {
+            $('#timerInput').val('00:00');
+            $('#potencyInput').val('0');
+            $('#potencyRow').hide();
+            let selectedInput = $('#timerInput'); 
+
+            $('.btn-dark').on('click', function () {
+                const value = $(this).data('value'); 
+
+                if (value === 'potencia') {
+                    $('#potencyRow').show();
+                    $('#timeRow').hide();
+                    selectedInput = $('#potencyInput');
+                    selectedInput.val('0');
+                    return; 
+
+                } else if (value === 'tempo') {
+                    $('#timeRow').show();
+                    $('#potencyRow').hide();
+                    selectedInput = $('#timerInput');
+                    selectedInput.val('00:00');
+                    return; 
+                } else if (value === 'inicio' || value === 'pausa' ||  (parseInt(value) < 0 &&  parseInt(value) > 10) ){
+                    return;
+                }
+
+
+                if (selectedInput.attr('id') === 'potencyInput') {
+
+                    const currentValue = selectedInput.val();
+                    let newValue;
+
+                    if (currentValue === '0') {
+                        newValue = value;
+                    } else if(currentValue === '1'){
+                        newValue = currentValue + value; 
+                    } else{
+                        newValue = value;
+                    }
+
+                    if (parseInt(newValue) > 10) {
+                        newValue = '10';
+                    }
+
+
+                    selectedInput.val(newValue);
+
+                } else if (selectedInput.attr('id') === 'timerInput') {
+
+                    const currentValue = selectedInput.val().replace(':', '');
+                    let newValue = currentValue + value;
+
+                    if (newValue.length > 4) {
+                        newValue = newValue.slice(-4); 
+                    }
+
+                    const minutes = parseInt(newValue.slice(0, 2));
+                    const seconds = parseInt(newValue.slice(2, 4));
+
+                     if (isNaN(minutes) || isNaN(seconds) || minutes < 0 || seconds < 0 || seconds >= 60) {
+                        console.error('Invalid time input:', newValue);
+                        return;
+                     }
+
+                     const totalSeconds = minutes * 60 + seconds;
+
+                     let validMinutes = Math.floor(totalSeconds / 60);
+                     let validSeconds = totalSeconds % 60;
+
+                     newValue = `${validMinutes.toString().padStart(2, '0')}:${validSeconds.toString().padStart(2, '0')}`;
+
+                    selectedInput.val(newValue);
+                }
+
+                selectedInput.trigger('input');
+            });
+        });
+    </script>
+
+    <script name="Calcula Tempo">
+        $(document).ready(function () {
+            let painel = $('#timerPanel').text();
+            let totalSeconds = parseInt("@ViewBag.Tempo");
+            let potencia = "@ViewBag.Potencia";
+            let estado = $('#statusInput').val();
+            let excecao = $('#exceptionInput').val();
+
+            let validMinutes = Math.floor(totalSeconds / 60);
+            let validSeconds = totalSeconds % 60;
+
+            let newValue = `${validMinutes.toString().padStart(2, '0')}:${validSeconds.toString().padStart(2, '0')}`;
+
+            $('#timerInput').val(newValue);
+            $('#potencyInput').val(potencia);
+
+            console.log(painel);
+            console.log("cheguei aqui");
+            console.log(totalSeconds);
+
+            if (painel != "" && totalSeconds > 0) {
+
+                console.log("cheguei aqui2");
+                let timerPanel = $('#timerPanel');
+                timerPanel.text(painel);
+
+
+                if(parseInt(excecao) == 1){
+                    $('.btn-number').attr("disabled", "disabled");
+                }
+
+                if(estado == "Andamento" || estado =="Execução"){
+                    let interval = setInterval(function () {
+
+                        if (totalSeconds <= 0) {
+                            clearInterval(interval);
+                            timerPanel.text("Aquecimento concluído!");
+                            $('#statusInput').val("Espera");
+                            $('.btn-number').removeAttr("disabled")
+                            return;
+                        }
+
+                        totalSeconds--;
+
+                        painel = painel.substring(0, totalSeconds * (parseInt(potencia) + 1));
+                        timerPanel.text(painel);
+
+                        let validMinutes = Math.floor(totalSeconds / 60);
+                        let validSeconds = totalSeconds % 60;
+
+                        let newValue = `${validMinutes.toString().padStart(2, '0')}:${validSeconds.toString().padStart(2, '0')}`;
+                        $('#timerInput').val(newValue);
+                    }, 1000);
+                }
+            }
+        });
+    </script>
+</footer>
